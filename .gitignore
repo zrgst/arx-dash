@@ -1,0 +1,30 @@
+# Build output
+bin/
+dist/
+*.exe
+
+# Local config / secrets
+.env
+.envrc
+config.toml
+
+# ARX exports / sensitive data
+out/
+*.xml
+*.json
+
+# Logs
+logs/
+*.log
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temp
+tmp/
+temp/
+*.tmp
+notes/
