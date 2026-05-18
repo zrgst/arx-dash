@@ -28,7 +28,8 @@ func main() {
 		cfg.ARXAllowSelfSigned,
 	)
 
-	server := web.NewServer(arxClient)
+	arxCache := arx.NewCache(arxClient)
+	server := web.NewServer(arxCache)
 
 	fmt.Printf("ARX Dashboard Go listening on http://localhost%s\n", cfg.Addr)
 
