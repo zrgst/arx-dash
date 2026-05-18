@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ARX Dashboard - {{ .Title }}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <main>
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark">ARX</div>
+
+          <div>
+            <h1>Personer</h1>
+            <p class="muted">Personer hentet fra ARX export.</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="module-menu">
+        <a class="module-tile {{ if eq .ActivePage "home" }}active{{ end }}" href="/">
+          <span class="tile-icon">⌂</span>
+          <strong>Start</strong>
+        </a>
+
+        <a class="module-tile {{ if eq .ActivePage "persons" }}active{{ end }}" href="/personer">
+          <span class="tile-icon">👤</span>
+          <strong>Personer</strong>
+        </a>
+
+        <a class="module-tile {{ if eq .ActivePage "cards" }}active{{ end }}" href="/kort">
+          <span class="tile-icon">💳</span>
+          <strong>Kort</strong>
+        </a>
+
+        <span class="module-tile disabled">
+          <span class="tile-icon">▦</span>
+          <strong>Område</strong>
+        </span>
+
+        <span class="module-tile disabled">
+          <span class="tile-icon">⚠</span>
+          <strong>Alarm</strong>
+        </span>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar">
+          <form method="post" action="/refresh">
+            <button type="submit">Refresh ARX cache</button>
+          </form>
+
+          {{ if .CacheLoaded }}
+            <span class="muted">Sist oppdatert: {{ .CacheUpdated }}</span>
+          {{ end }}
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Navn</th>
+              <th>Beskrivelse</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {{ range .Persons }}
+              <tr class="main-row">
+                <td>
+                  <strong>{{ .FirstName }} {{ .LastName }}</strong>
+                  <br />
+                  <small>{{ .ID }}</small>
+                </td>
+                <td>{{ .Description }}</td>
+              </tr>
+
+              <tr class="details-row-static">
+                <td colspan="2">
+                  <div class="details-box">
+                    <div class="details-card">
+                      <h3>Personinfo</h3>
+
+                      <div class="field">
+                        <div class="field-label">Fornavn</div>
+                        <div class="field-value">{{ .FirstName }}</div>
+                      </div>
+
+                      <div class="field">
+                        <div class="field-label">Etternavn</div>
+                        <div class="field-value">{{ .LastName }}</div>
+                      </div>
+
+                      <div class="field">
+                        <div class="field-label">Beskrivelse</div>
+                        <div class="field-value">{{ .Description }}</div>
+                      </div>
+
+                      <div class="field">
+                        <div class="field-label">ID</div>
+                        <div class="field-value"><code>{{ .ID }}</code></div>
+                      </div>
+
+                      <div class="field">
+                        <div class="field-label">PIN</div>
+                        <div class="field-value">{{ mask .PinCode }}</div>
+                      </div>
+                    </div>
+
+                    <div class="details-card">
+                      <h3>Adgangskort</h3>
+
+                      {{ if .Cards }}
+                        {{ range .Cards }}
+                          <div class="field">
+                            <div class="field-label">{{ .FormatName }}</div>
+                            <div class="field-value">
+                              <code>{{ .Number }}</code>
+                              <br />
+                              <small>Sperret: {{ yesNo .Inhibited }}</small>
+                              {{ if .Description }}
+                                <br />
+                                <small>{{ .Description }}</small>
+                              {{ end }}
+                            </div>
+                          </div>
+                        {{ end }}
+                      {{ else }}
+                        <em>Ingen kort</em>
+                      {{ end }}
+                    </div>
+
+                    <div class="details-card">
+                      <h3>Adgangsgrupper</h3>
+
+                      {{ if .AccessCategories }}
+                        {{ range .AccessCategories }}
+                          <div class="field">
+                            <div class="field-label">{{ .Name }}</div>
+                            <div class="field-value">
+                              {{ if .StartDate }}
+                                <small>Fra: {{ .StartDate }}</small><br />
+                              {{ else }}
+                                <small>Fra: Ikke satt</small><br />
+                              {{ end }}
+
+                              {{ if .EndDate }}
+                                <small>Til: {{ .EndDate }}</small>
+                              {{ else }}
+                                <small>Til: Ikke satt</small>
+                              {{ end }}
+                            </div>
+                          </div>
+                        {{ end }}
+                      {{ else }}
+                        <em>Ingen adgangsgrupper</em>
+                      {{ end }}
+                    </div>
+
+                    <div class="details-card wide">
+                      <h3>Innlogging</h3>
+
+                      <div class="field">
+                        <div class="field-label">Username</div>
+                        <div class="field-value">{{ .Username }}</div>
+                      </div>
+
+                      <div class="field">
+                        <div class="field-label">Password</div>
+                        <div class="field-value">{{ mask .Password }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {{ else }}
+              <tr>
+                <td colspan="2" class="empty-state">Ingen personer funnet.</td>
+              </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

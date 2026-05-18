@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ARX Dashboard - {{ .Title }}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <main>
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark">ARX</div>
+
+          <div>
+            <h1>ARX Dashboard</h1>
+            <p class="muted">Go-basert internt dashboard for ARX-data.</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="module-menu">
+        <a class="module-tile {{ if eq .ActivePage "home" }}active{{ end }}" href="/">
+          <span class="tile-icon">⌂</span>
+          <strong>Start</strong>
+        </a>
+
+        <a class="module-tile {{ if eq .ActivePage "persons" }}active{{ end }}" href="/personer">
+          <span class="tile-icon">👤</span>
+          <strong>Personer</strong>
+        </a>
+
+        <a class="module-tile {{ if eq .ActivePage "cards" }}active{{ end }}" href="/kort">
+          <span class="tile-icon">💳</span>
+          <strong>Kort</strong>
+        </a>
+
+        <span class="module-tile disabled">
+          <span class="tile-icon">▦</span>
+          <strong>Område</strong>
+        </span>
+
+        <span class="module-tile disabled">
+          <span class="tile-icon">⚠</span>
+          <strong>Alarm</strong>
+        </span>
+      </section>
+
+      <section class="splash-card">
+        <div class="splash-logo">ARX</div>
+
+        <h2>Startside</h2>
+        <p class="muted">
+          Velg modul i menyen. Foreløpig er Personer og Kort implementert.
+        </p>
+
+        <form method="post" action="/refresh">
+          <button type="submit">Refresh ARX cache</button>
+        </form>
+
+        <div class="status-card">
+          <strong>Cache status</strong>
+
+          {{ if .CacheLoaded }}
+            <p>Sist oppdatert: {{ .CacheUpdated }}</p>
+          {{ else }}
+            <p>Cache er ikke lastet ennå.</p>
+          {{ end }}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

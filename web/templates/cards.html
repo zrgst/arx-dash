@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ARX Dashboard - {{ .Title }}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <main>
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark">ARX</div>
+
+          <div>
+            <h1>Kort</h1>
+            <p class="muted">Alle kort hentet fra ARX export.</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="module-menu">
+        <a class="module-tile {{ if eq .ActivePage "home" }}active{{ end }}" href="/">
+          <span class="tile-icon">⌂</span>
+          <strong>Start</strong>
+        </a>
+
+        <a class="module-tile {{ if eq .ActivePage "persons" }}active{{ end }}" href="/personer">
+          <span class="tile-icon">👤</span>
+          <strong>Personer</strong>
+        </a>
+
+        <a class="module-tile {{ if eq .ActivePage "cards" }}active{{ end }}" href="/kort">
+          <span class="tile-icon">💳</span>
+          <strong>Kort</strong>
+        </a>
+
+        <span class="module-tile disabled">
+          <span class="tile-icon">▦</span>
+          <strong>Område</strong>
+        </span>
+
+        <span class="module-tile disabled">
+          <span class="tile-icon">⚠</span>
+          <strong>Alarm</strong>
+        </span>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar">
+          <form method="post" action="/refresh">
+            <button type="submit">Refresh ARX cache</button>
+          </form>
+
+          {{ if .CacheLoaded }}
+            <span class="muted">Sist oppdatert: {{ .CacheUpdated }}</span>
+          {{ end }}
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Kortnummer</th>
+              <th>Kortformat</th>
+              <th>Sperret?</th>
+              <th>Eier</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {{ range .Cards }}
+              <tr>
+                <td><code>{{ .Number }}</code></td>
+                <td>{{ .FormatName }}</td>
+                <td>{{ yesNo .Inhibited }}</td>
+                <td>{{ .OwnerName }}</td>
+              </tr>
+            {{ else }}
+              <tr>
+                <td colspan="4" class="empty-state">Ingen kort funnet.</td>
+              </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
